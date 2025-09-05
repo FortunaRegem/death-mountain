@@ -25,20 +25,7 @@ const cartridgeController = typeof window !== "undefined" ? new ControllerConnec
 
 export function DynamicConnectorProvider({ children }: PropsWithChildren) {
   const getInitialNetwork = (): NetworkConfig => {
-    if (typeof window !== "undefined") {
-      const savedNetwork = localStorage.getItem("lastSelectedNetwork");
-      if (savedNetwork) {
-        try {
-          const chainId = savedNetwork as ChainId;
-          if (Object.values(ChainId).includes(chainId)) {
-            return getNetworkConfig(chainId);
-          }
-        } catch (error) {
-          console.warn("Invalid saved network, using default:", error);
-        }
-      }
-    }
-    return getNetworkConfig(import.meta.env.VITE_PUBLIC_DEFAULT_CHAIN as ChainId);
+    return getNetworkConfig(import.meta.env.VITE_PUBLIC_CHAIN as ChainId);
   };
 
   const [currentNetworkConfig, setCurrentNetworkConfig] = useState<NetworkConfig>(getInitialNetwork);

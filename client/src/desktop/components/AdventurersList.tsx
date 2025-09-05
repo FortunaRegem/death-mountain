@@ -14,6 +14,7 @@ import {
 } from "metagame-sdk/sql";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { addAddressPadding } from "starknet";
 
 interface AdventurersListProps {
   onBack: () => void;
@@ -31,6 +32,7 @@ export default function AdventurersList({ onBack }: AdventurersListProps) {
     "game_token_systems"
   )?.address;
   const { games: gamesData, loading: gamesLoading } = useMetagameTokens({
+    mintedByAddress: addAddressPadding(currentNetworkConfig.dungeon),
     gameAddresses: [GAME_TOKEN_ADDRESS],
     owner: address,
   });

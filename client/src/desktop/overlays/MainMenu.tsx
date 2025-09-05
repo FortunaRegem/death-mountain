@@ -1,12 +1,13 @@
+import PaymentOptionsModal from "@/components/PaymentOptionsModal";
 import { useController } from "@/contexts/controller";
 import { useDynamicConnector } from "@/contexts/starknet";
 import discordIcon from "@/desktop/assets/images/discord.png";
 import AdventurersList from "@/desktop/components/AdventurersList";
-import BeastsCollected from "@/components/BeastsCollected";
-import PaymentOptionsModal from "@/components/PaymentOptionsModal";
 import Settings from "@/desktop/components/Settings";
 import { getMenuLeftOffset } from "@/utils/utils";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import TokenIcon from "@mui/icons-material/Token";
@@ -19,17 +20,11 @@ import Typography from "@mui/material/Typography";
 import { useAccount } from "@starknet-react/core";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Network from "../components/Network";
-import PriceIndicator from "../../components/PriceIndicator";
+import Leaderboard from "../components/Leaderboard";
 import WalletConnect from "../components/WalletConnect";
 import StatisticsModal from "./StatisticsModal";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import Leaderboard from "../components/Leaderboard";
-import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 
 export default function MainMenu() {
-  const navigate = useNavigate();
   const { account } = useAccount();
   const { login } = useController();
   const { currentNetworkConfig } = useDynamicConnector();
@@ -47,19 +42,6 @@ export default function MainMenu() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const handleStartGame = () => {
-    if (currentNetworkConfig.chainId === import.meta.env.VITE_PUBLIC_CHAIN) {
-      if (!account) {
-        login();
-        return;
-      }
-
-      setShowPaymentOptions(true);
-    } else {
-      navigate(`/survivor/play`);
-    }
-  };
 
   const handleShowAdventurers = () => {
     if (
@@ -94,13 +76,11 @@ export default function MainMenu() {
                 </Typography>
               </Box>
 
-              {currentNetworkConfig.name === "Beast Mode" && <PriceIndicator />}
-
               <Button
                 variant="outlined"
                 fullWidth
                 size="large"
-                onClick={handleStartGame}
+                onClick={() => window.open("https://budokan.gg/", "_blank")}
                 sx={{
                   px: 1,
                   display: "flex",
@@ -119,7 +99,7 @@ export default function MainMenu() {
                       color: "#d0c98d",
                     }}
                   >
-                    New Game
+                    Tournaments
                   </Typography>
                 </Box>
               </Button>
@@ -140,7 +120,7 @@ export default function MainMenu() {
                     color: "#d0c98d",
                   }}
                 >
-                  My Adventurers
+                  My Games
                 </Typography>
               </Button>
 
@@ -201,11 +181,6 @@ export default function MainMenu() {
               </Button> */}
 
               <Box sx={styles.bottom}>
-                {currentNetworkConfig.name === "Beast Mode" && (
-                  <BeastsCollected />
-                )}
-
-                <Network />
                 <WalletConnect />
 
                 <Box sx={styles.bottomRow}>
@@ -301,7 +276,7 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     mt: 2,
-    mb: 0.5,
+    mb: 2,
   },
   gameTitle: {
     fontSize: "1.6rem",

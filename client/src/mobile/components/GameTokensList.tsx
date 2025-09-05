@@ -11,6 +11,7 @@ import { getContractByName } from "@dojoengine/core";
 import { useDynamicConnector } from "@/contexts/starknet";
 import { useGameTokens as useMetagameTokens } from "metagame-sdk/sql";
 import { motion } from "framer-motion";
+import { addAddressPadding } from "starknet";
 
 export default function GameTokensList() {
   const { fetchAdventurerData } = useGameTokens();
@@ -30,6 +31,7 @@ export default function GameTokensList() {
   )?.address;
 
   const { games: gamesData } = useMetagameTokens({
+    mintedByAddress: addAddressPadding(currentNetworkConfig.dungeon),
     gameAddresses: [GAME_TOKEN_ADDRESS],
     owner: account?.address,
   });

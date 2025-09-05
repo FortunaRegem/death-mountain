@@ -1,37 +1,20 @@
+import PaymentOptionsModal from "@/components/PaymentOptionsModal";
 import { useController } from "@/contexts/controller";
 import { useDynamicConnector } from "@/contexts/starknet";
-import BeastsCollected from "@/components/BeastsCollected";
-import PriceIndicator from "@/components/PriceIndicator";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { useAccount } from "@starknet-react/core";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import GameTokensList from "../components/GameTokensList";
-import PaymentOptionsModal from "@/components/PaymentOptionsModal";
 import Leaderboard from "../components/Leaderboard";
 
 export default function LandingPage() {
   const { account } = useAccount();
   const { login } = useController();
   const { currentNetworkConfig } = useDynamicConnector();
-  const navigate = useNavigate();
   const [showAdventurers, setShowAdventurers] = useState(false);
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-
-  const handleStartGame = () => {
-    if (currentNetworkConfig.chainId === import.meta.env.VITE_PUBLIC_CHAIN) {
-      if (!account) {
-        login();
-        return;
-      }
-
-      setShowPaymentOptions(true);
-    } else {
-      navigate(`/survivor/play`);
-    }
-  };
 
   const handleShowAdventurers = () => {
     if (
@@ -67,13 +50,11 @@ export default function LandingPage() {
                 </Typography>
               </Box>
 
-              {currentNetworkConfig.name === "Beast Mode" && <PriceIndicator />}
-
               <Button
                 fullWidth
                 variant="contained"
                 size="large"
-                onClick={handleStartGame}
+                onClick={() => window.open("https://budokan.gg/", "_blank")}
                 sx={{ mt: 1 }}
                 startIcon={
                   <img
@@ -84,7 +65,7 @@ export default function LandingPage() {
                 }
               >
                 <Typography variant="h5" color="#111111">
-                  New Game
+                  Tournaments
                 </Typography>
               </Button>
 
@@ -97,7 +78,7 @@ export default function LandingPage() {
                 sx={{ height: "36px", mt: 1, mb: 1 }}
               >
                 <Typography variant="h5" color="#111111">
-                  My Adventurers
+                  My Games
                 </Typography>
               </Button>
 
@@ -117,12 +98,6 @@ export default function LandingPage() {
                   Leaderboard
                 </Typography>
               </Button>
-
-              <Box sx={styles.bottom}>
-                {currentNetworkConfig.name === "Beast Mode" && (
-                  <BeastsCollected />
-                )}
-              </Box>
             </>
           )}
 

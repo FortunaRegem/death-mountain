@@ -1,6 +1,5 @@
 import { getContractByName } from "@dojoengine/core";
 import manifest_mainnet from "../../manifest_mainnet.json";
-import manifest_sepolia from "../../manifest_sepolia.json";
 import manifest_slot from "../../manifest_slot.json";
 
 export interface NetworkConfig {
@@ -40,7 +39,7 @@ export enum ChainId {
 export const NETWORKS = {
   SN_MAIN: {
     chainId: ChainId.SN_MAIN,
-    name: "Beast Mode",
+    name: "Tournaments",
     status: "online",
     namespace: "ls_0_0_7",
     slot: "pg-mainnet-3",
@@ -60,14 +59,7 @@ export const NETWORKS = {
     beasts: "",
     goldenToken: "",
     ekuboRouter: "",
-    paymentTokens: [
-      {
-        name: "TICKET",
-        address:
-          "0x0124aeb495b947201f5fac96fd1138e326ad86195b98df6dec9009158a533b49",
-        displayDecimals: 0,
-      },
-    ],
+    paymentTokens: [],
   },
   // SN_SEPOLIA: {
   //   chainId: ChainId.SN_SEPOLIA,
@@ -159,19 +151,10 @@ export function getNetworkConfig(networkKey: ChainId): NetworkConfig {
     namespace,
     "game_systems"
   )?.address;
-  const game_token_systems = getContractByName(
-    manifest,
-    namespace,
-    "game_token_systems"
-  )?.address;
   const vrf_provider = import.meta.env.VITE_PUBLIC_VRF_PROVIDER_ADDRESS;
 
   // Base policies that are common across networks
   const policies = [
-    {
-      target: game_token_systems,
-      method: "mint_game",
-    },
     {
       target: game_systems,
       method: "start_game",
@@ -207,10 +190,6 @@ export function getNetworkConfig(networkKey: ChainId): NetworkConfig {
     {
       target: vrf_provider,
       method: "request_random",
-    },
-    {
-      target: network.dungeon,
-      method: "claim_beast",
     },
   ];
 
