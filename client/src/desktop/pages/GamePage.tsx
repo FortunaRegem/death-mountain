@@ -1,22 +1,19 @@
 import { useController } from "@/contexts/controller";
-import { useDynamicConnector } from "@/contexts/starknet";
 import VideoPlayer from "@/desktop/components/VideoPlayer";
 import { useGameDirector } from "@/desktop/contexts/GameDirector";
 import CombatOverlay from "@/desktop/overlays/Combat";
 import DeathOverlay from "@/desktop/overlays/Death";
 import ExploreOverlay from "@/desktop/overlays/Explore";
 import LoadingOverlay from "@/desktop/overlays/Loading";
-import { useSystemCalls } from "@/dojo/useSystemCalls";
 import { useGameStore } from "@/stores/gameStore";
 import { useUIStore } from "@/stores/uiStore";
 import { streamIds } from "@/utils/cloudflare";
-import { ChainId, getNetworkConfig, NetworkConfig } from "@/utils/networkConfig";
 import { getMenuLeftOffset } from "@/utils/utils";
 import { Box } from "@mui/material";
 import { useAccount } from "@starknet-react/core";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 interface AnimatedOverlayProps {
   children: React.ReactNode;
@@ -36,13 +33,8 @@ const AnimatedOverlay = ({ children, overlayKey }: AnimatedOverlayProps) => (
 );
 
 export default function GamePage() {
-  const navigate = useNavigate();
-  const { setCurrentNetworkConfig, currentNetworkConfig } = useDynamicConnector();
-  const { mintGame } = useSystemCalls();
-
   const {
     account,
-    playerName,
     login,
     isPending,
   } = useController();
@@ -62,7 +54,6 @@ export default function GamePage() {
 
   const [searchParams] = useSearchParams();
   const game_id = Number(searchParams.get("id"));
-  const settings_id = Number(searchParams.get("settingsId"));
   const mode = searchParams.get("mode");
 
   useEffect(() => {
@@ -79,16 +70,6 @@ export default function GamePage() {
   }, []);
 
   useEffect(() => {
-    if (mode === "real" && currentNetworkConfig.chainId !== import.meta.env.VITE_PUBLIC_CHAIN) {
-      setCurrentNetworkConfig(getNetworkConfig(import.meta.env.VITE_PUBLIC_CHAIN) as NetworkConfig);
-      return;
-    }
-
-    if (mode === "practice" && currentNetworkConfig.chainId !== ChainId.WP_PG_SLOT) {
-      setCurrentNetworkConfig(getNetworkConfig(ChainId.WP_PG_SLOT) as NetworkConfig);
-      return;
-    }
-
     if (spectating) {
       setGameId(game_id);
       return;
@@ -96,15 +77,15 @@ export default function GamePage() {
 
     if (isPending) return;
 
+    if (!controllerAddress) {
+      login();
+      return;
+    }
+
     if (mode === "entering") {
       if (!skipIntroOutro) {
         setVideoQueue([streamIds.start]);
       }
-      return;
-    }
-
-    if (!controllerAddress && mode === "real") {
-      login();
       return;
     }
 
@@ -114,33 +95,14 @@ export default function GamePage() {
 
     if (game_id) {
       setGameId(game_id);
-    } else if (game_id === 0) {
-      mint();
     }
-  }, [game_id, controllerAddress, isPending, account, currentNetworkConfig.chainId, mode]);
+  }, [game_id, controllerAddress, isPending, account, mode]);
 
   useEffect(() => {
     return () => {
       exitGame();
     };
   }, []);
-
-  async function mint() {
-    if (!skipIntroOutro) {
-      setVideoQueue([streamIds.start]);
-    }
-
-    let tokenId = await mintGame(playerName, settings_id);
-    navigate(
-      `/survivor/play?id=${tokenId}${mode === "practice" ? "&mode=practice" : ""
-      }`,
-      { replace: true }
-    );
-
-    if (!skipIntroOutro) {
-      setShowOverlay(false);
-    }
-  }
 
   const isLoading = !gameId || !adventurer;
 

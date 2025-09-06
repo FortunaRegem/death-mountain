@@ -1,8 +1,5 @@
 import { useController } from "@/contexts/controller";
-import { useDynamicConnector } from "@/contexts/starknet";
-import { useSystemCalls } from "@/dojo/useSystemCalls";
 import { useGameStore } from "@/stores/gameStore";
-import { ChainId, getNetworkConfig, NetworkConfig } from "@/utils/networkConfig";
 import { Box } from "@mui/material";
 import { useAccount } from "@starknet-react/core";
 import { useEffect, useState } from "react";
@@ -23,15 +20,8 @@ import { useGameDirector } from "../contexts/GameDirector";
 
 export default function GamePage() {
   const navigate = useNavigate();
-  const { setCurrentNetworkConfig, currentNetworkConfig } = useDynamicConnector();
-  const { mintGame } = useSystemCalls();
   const { spectating } = useGameDirector();
-  const {
-    account,
-    playerName,
-    login,
-    isPending,
-  } = useController();
+  const { account, login, isPending } = useController();
   const { address: controllerAddress } = useAccount();
   const {
     gameId,
@@ -52,18 +42,7 @@ export default function GamePage() {
 
   const [searchParams] = useSearchParams();
   const game_id = Number(searchParams.get("id"));
-  const settings_id = Number(searchParams.get("settingsId"));
   const mode = searchParams.get("mode");
-
-  async function mint() {
-    setLoadingProgress(45);
-    let tokenId = await mintGame(playerName, settings_id);
-    navigate(
-      `/survivor/play?id=${tokenId}${mode === "practice" ? "&mode=practice" : ""
-      }`,
-      { replace: true }
-    );
-  }
 
   useEffect(() => {
     if (!account && gameId && adventurer) {
@@ -72,16 +51,6 @@ export default function GamePage() {
   }, [account]);
 
   useEffect(() => {
-    if (mode === "real" && currentNetworkConfig.chainId !== import.meta.env.VITE_PUBLIC_CHAIN) {
-      setCurrentNetworkConfig(getNetworkConfig(import.meta.env.VITE_PUBLIC_CHAIN) as NetworkConfig);
-      return;
-    }
-
-    if (mode === "practice" && currentNetworkConfig.chainId !== ChainId.WP_PG_SLOT) {
-      setCurrentNetworkConfig(getNetworkConfig(ChainId.WP_PG_SLOT) as NetworkConfig);
-      return;
-    }
-
     if (spectating) {
       setLoadingProgress(99);
       setGameId(game_id);
@@ -95,7 +64,7 @@ export default function GamePage() {
       return;
     }
 
-    if (!controllerAddress && mode === "real") {
+    if (!controllerAddress) {
       login();
       return;
     }
@@ -107,10 +76,8 @@ export default function GamePage() {
     if (game_id) {
       setLoadingProgress(99);
       setGameId(game_id);
-    } else if (game_id === 0) {
-      mint();
     }
-  }, [game_id, controllerAddress, isPending, account, currentNetworkConfig.chainId]);
+  }, [game_id, controllerAddress, isPending, account]);
 
   useEffect(() => {
     setActiveNavItem("GAME");

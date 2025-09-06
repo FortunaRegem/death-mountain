@@ -74,7 +74,7 @@ export default function AdventurersList({ onBack }: AdventurersListProps) {
 
     return (
       <>
-        {hours > 0 && (
+        {hours > 0 ? (
           <>
             <Typography color="primary" sx={{ fontSize: "13px" }}>
               {hours}
@@ -83,16 +83,18 @@ export default function AdventurersList({ onBack }: AdventurersListProps) {
               h
             </Typography>
           </>
-        )}
-        <Typography
-          color="primary"
-          sx={{ fontSize: "13px", ml: hours > 0 ? "4px" : "0px" }}
-        >
-          {minutes}
-        </Typography>
-        <Typography color="primary" sx={{ fontSize: "13px", ml: "2px" }}>
-          m
-        </Typography>
+        ) : <>
+          <Typography
+            color="primary"
+            sx={{ fontSize: "13px", ml: hours > 0 ? "4px" : "0px" }}
+          >
+            {minutes}
+          </Typography>
+          <Typography color="primary" sx={{ fontSize: "13px", ml: "2px" }}>
+            m
+          </Typography>
+        </>
+        }
       </>
     );
   };
