@@ -41,19 +41,19 @@ export const NETWORKS = {
     chainId: ChainId.SN_MAIN,
     name: "Tournaments",
     status: "online",
-    namespace: "ls_0_0_7",
-    slot: "pg-mainnet-3",
+    namespace: "ls_0_0_8",
+    slot: "pg-mainnet",
     rpcUrl: "https://api.cartridge.gg/x/starknet/mainnet/rpc/v0_9",
-    torii: "https://api.cartridge.gg/x/pg-mainnet-3/torii",
+    torii: "https://api.cartridge.gg/x/pg-mainnet/torii",
     tokens: {
       erc20: [],
     },
     manifest: manifest_mainnet,
     vrf: true,
     denshokan:
-      "0x0329437ad8ef5584260ccb2b699f6662964ce2de782933c9a4d0a86efd1b72dc",
+      "0x58f888ba5897efa811eca5e5818540d35b664f4281660cd839cd5a4b0bf4582",
     dungeon:
-      "0x01f68ddfad04e7a08b8188289d35655121714c3efc212703410f75fa79bcf374",
+      "0x043f69cc7095fc61a7e5b52549b496c88f3d949ef5b6786697e1e94c1224ea99",
     dungeonTicket:
       "0x0124aeb495b947201f5fac96fd1138e326ad86195b98df6dec9009158a533b49",
     beasts: "",

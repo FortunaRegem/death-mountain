@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAnalytics } from "@/utils/analytics";
 import { useEffect } from "react";
-import { useGameTokenRanking } from "metagame-sdk/sql";
+import { useGameTokens, useGameTokenRanking } from "metagame-sdk/sql";
 import { addAddressPadding } from "starknet";
 import { getContractByName } from "@dojoengine/core";
 
@@ -32,33 +32,44 @@ export default function DeathScreen() {
 
   let battleMessage = "";
   if (finalBattleEvent?.type === "obstacle") {
-    battleMessage = `${OBSTACLE_NAMES[finalBattleEvent.obstacle?.id!]
-      } hit your ${finalBattleEvent.obstacle?.location} for ${finalBattleEvent.obstacle?.damage
-      } damage ${finalBattleEvent.obstacle?.critical_hit ? "CRITICAL HIT!" : ""}`;
+    battleMessage = `${
+      OBSTACLE_NAMES[finalBattleEvent.obstacle?.id!]
+    } hit your ${finalBattleEvent.obstacle?.location} for ${
+      finalBattleEvent.obstacle?.damage
+    } damage ${finalBattleEvent.obstacle?.critical_hit ? "CRITICAL HIT!" : ""}`;
   } else if (finalBattleEvent?.type === "beast_attack") {
-    battleMessage = `${BEAST_NAMES[beast?.id!]} attacked your ${battleEvent?.attack?.location
-      } for ${battleEvent?.attack?.damage} damage ${battleEvent?.attack?.critical_hit ? "CRITICAL HIT!" : ""
-      }`;
+    battleMessage = `${BEAST_NAMES[beast?.id!]} attacked your ${
+      battleEvent?.attack?.location
+    } for ${battleEvent?.attack?.damage} damage ${
+      battleEvent?.attack?.critical_hit ? "CRITICAL HIT!" : ""
+    }`;
   } else if (finalBattleEvent?.type === "ambush") {
-    battleMessage = `${BEAST_NAMES[beast?.id!]} ambushed your ${battleEvent?.attack?.location
-      } for ${battleEvent?.attack?.damage} damage ${battleEvent?.attack?.critical_hit ? "CRITICAL HIT!" : ""
-      }`;
+    battleMessage = `${BEAST_NAMES[beast?.id!]} ambushed your ${
+      battleEvent?.attack?.location
+    } for ${battleEvent?.attack?.damage} damage ${
+      battleEvent?.attack?.critical_hit ? "CRITICAL HIT!" : ""
+    }`;
   }
 
   const shareMessage =
     finalBattleEvent?.type === "obstacle"
-      ? `I got a score of ${adventurer?.xp
-      } in the Loot Survivor 2 practice dungeon. \n\n💀 ${OBSTACLE_NAMES[finalBattleEvent.obstacle?.id!]
-      } ended my journey. \n\nProvable Games will be launching Loot Survivor 2 on September 10, right in the middle of Starktember.\n\n@provablegames @lootsurvivor`
+      ? `I got a score of ${
+          adventurer?.xp
+        } in the Loot Survivor 2 practice dungeon. \n\n💀 ${
+          OBSTACLE_NAMES[finalBattleEvent.obstacle?.id!]
+        } ended my journey. \n\nProvable Games will be launching Loot Survivor 2 on September 10, right in the middle of Starktember.\n\n@provablegames @lootsurvivor`
       : `I got a score of ${adventurer?.xp} in the Loot Survivor 2 practice dungeon. \n\n💀 A ${beast?.name} ended my journey. \n\nProvable Games will be launching Loot Survivor 2 on September 10, right in the middle of Starktember.\n\n@provablegames @lootsurvivor`;
 
-  const backToMenu = () => {
+  const backToBudokan = () => {
     if (quest) {
       navigate(`/survivor/campaign?chapter=${quest.chapterId}`, {
         replace: true,
       });
     } else {
-      navigate("/survivor", { replace: true });
+      window.open(
+        `https://budokan.gg/tournament/${games[0].context?.contexts?.["Tournament ID"]}`,
+        "_blank"
+      );
     }
   };
 
@@ -79,8 +90,16 @@ export default function DeathScreen() {
 
   let tokenResult = useGameTokenRanking({
     tokenId: gameId!,
-    mintedByAddress: currentNetworkConfig.chainId === ChainId.WP_PG_SLOT ? GAME_TOKEN_ADDRESS : addAddressPadding(currentNetworkConfig.dungeon),
-    settings_id: currentNetworkConfig.chainId === ChainId.WP_PG_SLOT ? 0 : undefined
+    mintedByAddress:
+      currentNetworkConfig.chainId === ChainId.WP_PG_SLOT
+        ? GAME_TOKEN_ADDRESS
+        : addAddressPadding(currentNetworkConfig.dungeon),
+    settings_id:
+      currentNetworkConfig.chainId === ChainId.WP_PG_SLOT ? 0 : undefined,
+  });
+
+  let { games } = useGameTokens({
+    tokenIds: [gameId!],
   });
 
   return (
@@ -99,12 +118,16 @@ export default function DeathScreen() {
         <Box sx={styles.statsContainer}>
           <Box sx={styles.statCard}>
             <Typography sx={styles.statLabel}>Final Score</Typography>
-            <Typography sx={styles.statValue}>{tokenResult.ranking?.score || adventurer?.xp || 0}</Typography>
+            <Typography sx={styles.statValue}>
+              {tokenResult.ranking?.score || adventurer?.xp || 0}
+            </Typography>
           </Box>
 
           <Box sx={styles.statCard}>
             <Typography sx={styles.statLabel}>Rank</Typography>
-            <Typography sx={styles.statValue}>{tokenResult.ranking?.rank || 0}</Typography>
+            <Typography sx={styles.statValue}>
+              {tokenResult.ranking?.rank || 0}
+            </Typography>
           </Box>
         </Box>
 
@@ -120,8 +143,9 @@ export default function DeathScreen() {
         <Box sx={styles.messageContainer}>
           <Typography sx={styles.message}>
             {collectableCount > 0
-              ? `You've proven your worth in Death Mountain by collecting ${collectableCount} ${collectableCount === 1 ? "beast" : "beasts"
-              }. Your victories will echo through the halls of the great adventurers.`
+              ? `You've proven your worth in Death Mountain by collecting ${collectableCount} ${
+                  collectableCount === 1 ? "beast" : "beasts"
+                }. Your victories will echo through the halls of the great adventurers.`
               : `Though you fought valiantly in Death Mountain, the beasts proved too elusive this time. The mountain awaits your return, adventurer.`}
           </Typography>
         </Box>
@@ -140,10 +164,10 @@ export default function DeathScreen() {
           </Button>
           <Button
             variant="contained"
-            onClick={backToMenu}
+            onClick={backToBudokan}
             sx={styles.restartButton}
           >
-            Play Again
+            Budokan Leaderboard
           </Button>
         </Box>
       </Box>

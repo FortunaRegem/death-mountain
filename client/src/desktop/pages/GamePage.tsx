@@ -33,11 +33,7 @@ const AnimatedOverlay = ({ children, overlayKey }: AnimatedOverlayProps) => (
 );
 
 export default function GamePage() {
-  const {
-    account,
-    login,
-    isPending,
-  } = useController();
+  const { account, login, isPending } = useController();
   const { address: controllerAddress } = useAccount();
   const {
     gameId,
