@@ -51,7 +51,7 @@ export const NETWORKS = {
     manifest: manifest_mainnet,
     vrf: true,
     denshokan:
-      "0x58f888ba5897efa811eca5e5818540d35b664f4281660cd839cd5a4b0bf4582",
+      "0x036017e69d21d6d8c13e266eabb73ef1f1d02722d86bdcabe5f168f8e549d3cd",
     dungeon:
       "0x043f69cc7095fc61a7e5b52549b496c88f3d949ef5b6786697e1e94c1224ea99",
     dungeonTicket:
