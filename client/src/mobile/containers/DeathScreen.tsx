@@ -55,10 +55,10 @@ export default function DeathScreen() {
     finalBattleEvent?.type === "obstacle"
       ? `I got a score of ${
           adventurer?.xp
-        } in the Loot Survivor 2 practice dungeon. \n\n💀 ${
+        } in a Loot Survivor 2 Budokan Tournament. \n\n💀 ${
           OBSTACLE_NAMES[finalBattleEvent.obstacle?.id!]
-        } ended my journey. \n\nProvable Games will be launching Loot Survivor 2 on September 10, right in the middle of Starktember.\n\n@provablegames @lootsurvivor`
-      : `I got a score of ${adventurer?.xp} in the Loot Survivor 2 practice dungeon. \n\n💀 A ${beast?.name} ended my journey. \n\nProvable Games will be launching Loot Survivor 2 on September 10, right in the middle of Starktember.\n\n@provablegames @lootsurvivor`;
+        } ended my journey. \n\nBudokan hosts regular tournaments with exciting prizes up for grabs, all throughout Starktember! 🏆 @budokan_gg @lootsurvivor`
+      : `I got a score of ${adventurer?.xp} in a Loot Survivor 2 Budokan Tournament. \n\n💀 A ${beast?.name} ended my journey. \n\nBudokan hosts regular tournaments with exciting prizes up for grabs, all throughout Starktember! 🏆 @budokan_gg @lootsurvivor`;
 
   const backToBudokan = () => {
     if (quest) {
@@ -123,12 +123,12 @@ export default function DeathScreen() {
             </Typography>
           </Box>
 
-          <Box sx={styles.statCard}>
+          {/* <Box sx={styles.statCard}>
             <Typography sx={styles.statLabel}>Rank</Typography>
             <Typography sx={styles.statValue}>
               {tokenResult.ranking?.rank || 0}
             </Typography>
-          </Box>
+          </Box> */}
         </Box>
 
         {finalBattleEvent && (
